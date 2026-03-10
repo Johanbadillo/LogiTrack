@@ -1,10 +1,13 @@
 package com.s1.LogiTrack.model;
 
+import com.s1.LogiTrack.enums.Tamano;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table
@@ -12,20 +15,21 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class detalleMovimiento {
+public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private movimientos idMovimiento;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private producto idProducto;
+    @Column(nullable = false)
+    private String nombre;
 
     @Column(nullable = false)
-    private Integer cantidad;
+    private String categoria;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Tamano tamano;
+
+    @Column(nullable = false)
+    private BigDecimal precioMensual;
 }

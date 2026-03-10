@@ -1,10 +1,13 @@
 package com.s1.LogiTrack.model;
 
+import com.s1.LogiTrack.enums.TipoMovimiento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Entity
 @Table
@@ -12,22 +15,28 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class bodega {
+public class Movimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String nombre;
+    private Date fecha;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String ubicacion;
-
-    @Column(nullable = false)
-    private Integer Capacidad;
+    private TipoMovimiento tipoMovimiento;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private empleado idEncargado;
+    private Empleado idEmpleado;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Bodega idBodegaOrigen;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Bodega idBodegaDestino;
 
 }

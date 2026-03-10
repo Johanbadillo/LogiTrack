@@ -6,15 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Entity
 @Table
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class producto {
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
+public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,11 +19,12 @@ public class producto {
     private String nombre;
 
     @Column(nullable = false)
-    private String categoria;
+    private String documento;
 
     @Column(nullable = false)
-    private String tamano;
+    private String correo;
 
     @Column(nullable = false)
-    private BigDecimal precioMensual;
+    private String telefono;
+
 }

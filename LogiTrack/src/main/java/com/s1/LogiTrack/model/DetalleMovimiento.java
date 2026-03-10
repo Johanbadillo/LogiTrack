@@ -12,18 +12,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class inventario {
+public class DetalleMovimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private bodega idBodega;
+    private Movimiento idMovimiento;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private producto idProducto;
+    private Producto idProducto;
 
     @Column(nullable = false)
     private Integer cantidad;

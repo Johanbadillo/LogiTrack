@@ -1,12 +1,11 @@
 package com.s1.LogiTrack.model;
 
+import com.s1.LogiTrack.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Collection;
 
 @Entity
 @Table
@@ -14,10 +13,11 @@ import java.util.Collection;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class empleado extends persona {
+public class Empleado extends Persona {
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String rol;
+    private Rol rol;
 
     @Column(nullable = false)
     private String usuario;
@@ -25,14 +25,4 @@ public class empleado extends persona {
     @Column(nullable = false)
     private String contrasena;
 
-    @ManyToMany(mappedBy = "idEncargado")
-    private Collection<bodega> bodegas;
-
-    public Collection<bodega> getBodegas() {
-        return bodegas;
-    }
-
-    public void setBodegas(Collection<bodega> bodegas) {
-        this.bodegas = bodegas;
-    }
 }

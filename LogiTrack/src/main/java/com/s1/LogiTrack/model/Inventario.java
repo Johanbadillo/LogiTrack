@@ -6,35 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Entity
 @Table
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class movimientos {
+public class Inventario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Bodega idBodega;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Producto idProducto;
+
     @Column(nullable = false)
-    private Date fecha;
-
-    @Column(nullable = false)
-    private  String tipoMovimiento;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private empleado idEmpleado;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private bodega idBodegaOrigen;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private bodega idBodegaDestino;
+    private Integer cantidad;
 
 }

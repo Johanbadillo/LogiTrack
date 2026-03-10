@@ -8,23 +8,26 @@ import lombok.Setter;
 
 @Entity
 @Table
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
-public class persona {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Bodega {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String nombre;
 
     @Column(nullable = false)
-    private String documento;
+    private String ubicacion;
 
     @Column(nullable = false)
-    private String correo;
+    private Integer capacidad;
 
-    @Column(nullable = false)
-    private String telefono;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Empleado idEncargado;
 
 }
