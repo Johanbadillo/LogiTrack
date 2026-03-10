@@ -26,7 +26,7 @@ public class Bodega {
     @Column(nullable = false)
     private Integer capacidad;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Empleado idEncargado;
 

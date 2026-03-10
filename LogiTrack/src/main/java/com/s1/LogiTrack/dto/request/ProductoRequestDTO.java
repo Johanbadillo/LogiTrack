@@ -2,6 +2,7 @@ package com.s1.LogiTrack.dto.request;
 
 import com.s1.LogiTrack.enums.Tamano;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -14,9 +15,9 @@ public record ProductoRequestDTO(
         @NotBlank(message = "La categoria no puede estar vacía")
         @Size(min = 3, max = 30, message = "La categoria debe tener entre 3 y 30 caracteres")
         String categoria,
-        @NotBlank(message = "El tamaño no puede estar vacío")
+        @NotNull(message = "El tamaño no puede estar vacío")
         Tamano tamano,
-        @NotBlank(message = "El precio mensual no puede ser nulo")
+        @NotNull(message = "El precio mensual no puede ser nulo")
         @Positive( message = "El precio debe ser mayor que 0")
         BigDecimal precioMensual
 ) {
