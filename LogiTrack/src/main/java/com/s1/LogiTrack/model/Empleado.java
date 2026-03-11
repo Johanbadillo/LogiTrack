@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "empleado")
+@PrimaryKeyJoinColumn(name = "id")
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
 public class Empleado extends Persona {
 
     @Enumerated(EnumType.STRING)
