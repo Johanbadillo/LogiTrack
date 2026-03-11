@@ -7,7 +7,9 @@ import com.s1.LogiTrack.dto.response.ProductoResponseDTO;
 import com.s1.LogiTrack.model.DetalleMovimiento;
 import com.s1.LogiTrack.model.Movimiento;
 import com.s1.LogiTrack.model.Producto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DetalleMovimientoMapper {
 
     public DetalleMovimientoResponseDTO entidadADTO(DetalleMovimiento detalle, MovimientoResponseDTO dtoM, ProductoResponseDTO dtoP) {

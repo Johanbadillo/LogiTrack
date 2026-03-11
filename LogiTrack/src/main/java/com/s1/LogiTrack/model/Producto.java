@@ -30,6 +30,6 @@ public class Producto {
     @Column(nullable = false)
     private Tamano tamano;
 
-    @Column(nullable = false)
+    @Column(name = "precio_mensual", nullable = false)
     private BigDecimal precioMensual;
 }

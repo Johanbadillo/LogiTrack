@@ -18,11 +18,11 @@ public class Inventario {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "id_bodega",nullable = false)
     private Bodega idBodega;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "id_producto",nullable = false)
     private Producto idProducto;
 
     @Column(nullable = false)

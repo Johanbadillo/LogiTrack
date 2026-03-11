@@ -24,19 +24,19 @@ public class Movimiento {
     private LocalDate fecha;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "tipo_movimiento", nullable = false)
     private TipoMovimiento tipoMovimiento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "id_empleado",nullable = false)
     private Empleado idEmpleado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "id_bodega_origen",nullable = false)
     private Bodega idBodegaOrigen;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "id_bodega_destino",nullable = false)
     private Bodega idBodegaDestino;
 
 }
