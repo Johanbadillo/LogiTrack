@@ -9,11 +9,11 @@ public interface DetalleMovimientoService {
 
     DetalleMovimientoResponseDTO crear(DetalleMovimientoRequestDTO dto);
 
-    List<DetalleMovimientoResponseDTO> listar();
-
     DetalleMovimientoResponseDTO buscarPorId(Long id);
 
     DetalleMovimientoResponseDTO actualizar(Long id, DetalleMovimientoRequestDTO dto);
 
     void eliminar(Long id);
+
+    List<DetalleMovimientoResponseDTO> buscarPorMovimientoId(Long idMovimiento);
 }

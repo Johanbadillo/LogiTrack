@@ -3,6 +3,10 @@ package com.s1.LogiTrack.controller;
 import com.s1.LogiTrack.dto.request.ProductoRequestDTO;
 import com.s1.LogiTrack.dto.response.ProductoResponseDTO;
 import com.s1.LogiTrack.service.impl.ProductoServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +21,48 @@ public class ProductoController {
 
     private final ProductoServiceImpl productoService;
 
+    @Operation(
+            summary = "Crear producto",
+            description = "Permite registrar un nuevo producto en el sistema"
+    )
     @PostMapping
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Producto creado correctamente"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos o body mal estructurado",
+                    content = @Content
+            )
+    })
     public ResponseEntity<ProductoResponseDTO> guardar(@RequestBody ProductoRequestDTO dto){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productoService.crear(dto));
     }
 
+    @Operation(
+            summary = "Actualizar producto",
+            description = "Permite actualizar la información de un producto mediante su ID"
+    )
     @PutMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Producto actualizado correctamente"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Producto no encontrado",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos",
+                    content = @Content
+            )
+    })
     public ResponseEntity<ProductoResponseDTO> actualizar(
             @RequestBody ProductoRequestDTO dto,
             @PathVariable Long id){
@@ -32,19 +71,59 @@ public class ProductoController {
                 .body(productoService.actualizar(id, dto));
     }
 
+    @Operation(
+            summary = "Listar productos",
+            description = "Obtiene la lista de todos los productos registrados en el sistema"
+    )
     @GetMapping
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista de productos obtenida correctamente"
+            )
+    })
     public ResponseEntity<List<ProductoResponseDTO>> listarTodos(){
         return ResponseEntity.ok()
                 .body(productoService.listar());
     }
 
+    @Operation(
+            summary = "Buscar producto por ID",
+            description = "Obtiene la información de un producto específico mediante su ID"
+    )
     @GetMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Producto encontrado"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Producto no encontrado",
+                    content = @Content
+            )
+    })
     public ResponseEntity<ProductoResponseDTO> buscarId(@PathVariable Long id){
         return ResponseEntity.ok()
                 .body(productoService.buscarPorId(id));
     }
 
+    @Operation(
+            summary = "Eliminar producto",
+            description = "Permite eliminar un producto del sistema mediante su ID"
+    )
     @DeleteMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Producto eliminado correctamente"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Producto no encontrado",
+                    content = @Content
+            )
+    })
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         productoService.eliminar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

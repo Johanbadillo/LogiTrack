@@ -18,11 +18,6 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
     }
 
     @Override
-    public List<DetalleMovimientoResponseDTO> listar() {
-        return List.of();
-    }
-
-    @Override
     public DetalleMovimientoResponseDTO buscarPorId(Long id) {
         return null;
     }
@@ -36,4 +31,10 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
     public void eliminar(Long id) {
 
     }
+
+    @Override
+    public List<DetalleMovimientoResponseDTO> buscarPorMovimientoId(Long idMovimiento) {
+        return List.of();
+    }
+
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "movimiento")
@@ -21,7 +21,7 @@ public class Movimiento {
     private Long id;
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
