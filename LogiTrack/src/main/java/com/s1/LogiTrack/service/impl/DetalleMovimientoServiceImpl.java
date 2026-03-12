@@ -6,10 +6,9 @@ import com.s1.LogiTrack.dto.response.DetalleMovimientoResponseDTO;
 import com.s1.LogiTrack.dto.response.EmpleadoResponseDTO;
 import com.s1.LogiTrack.exception.BusinessRuleException;
 import com.s1.LogiTrack.mapper.*;
-import com.s1.LogiTrack.model.DetalleMovimiento;
-import com.s1.LogiTrack.model.Movimiento;
-import com.s1.LogiTrack.model.Producto;
+import com.s1.LogiTrack.model.*;
 import com.s1.LogiTrack.repository.DetalleMovimientoRepository;
+import com.s1.LogiTrack.repository.InventarioRepository;
 import com.s1.LogiTrack.repository.MovimientoRepository;
 import com.s1.LogiTrack.repository.ProductoRepository;
 import com.s1.LogiTrack.service.DetalleMovimientoService;
@@ -35,6 +34,8 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
     private final EmpleadoMapper empleadoMapper;
     private final BodegaMapper bodegaMapper;
 
+    private final InventarioRepository inventarioRepository;
+
     @Override
     public DetalleMovimientoResponseDTO crear(@NonNull DetalleMovimientoRequestDTO dto) {
 
@@ -47,12 +48,49 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         DetalleMovimiento d = detalleMovimientoMapper.DTOAentidad(dto, m, p);
         DetalleMovimiento dInsertado = detalleMovimientoRepository.save(d);
 
-        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
-        BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
-        BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
+        Bodega origen = m.getIdBodegaOrigen();
+        Bodega destino = m.getIdBodegaDestino();
 
-        return detalleMovimientoMapper.entidadADTO(dInsertado, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p)
-        );
+        Inventario invOrigen = inventarioRepository
+                .findByIdBodega_IdAndIdProducto_Id(origen.getId(), p.getId());
+
+        if(invOrigen == null){
+            throw new BusinessRuleException("EL PRODUCTO NO EXISTE EN LA BODEGA ORIGEN");
+        }
+
+        if(invOrigen.getCantidad() < dto.cantidad()){
+            throw new BusinessRuleException("NO HAY STOCK SUFICIENTE EN BODEGA ORIGEN");
+        }
+
+        // RESTAR EN ORIGEN
+        invOrigen.setCantidad(origen.getCapacidad() - dto.cantidad());
+        inventarioRepository.save(invOrigen);
+
+
+        // INVENTARIO DESTINO
+        Inventario invDestino = inventarioRepository
+                .findByIdBodega_IdAndIdProducto_Id(destino.getId(), p.getId());
+
+        if(invDestino != null){
+
+            invDestino.setCantidad(invDestino.getCantidad() + dto.cantidad());
+            inventarioRepository.save(invDestino);
+
+        }else{
+
+            Inventario nuevo = new Inventario();
+            nuevo.setIdBodega(destino);
+            nuevo.setIdProducto(p);
+            nuevo.setCantidad(dto.cantidad());
+
+            inventarioRepository.save(nuevo);
+        }
+
+        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
+        BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(origen, dtoE);
+        BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(destino, dtoE);
+
+        return detalleMovimientoMapper.entidadADTO(dInsertado, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
     }
 
     @Override

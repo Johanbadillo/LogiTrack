@@ -9,4 +9,5 @@ public interface InventarioRepository extends JpaRepository<Inventario,Long> {
 
     boolean existsByIdBodega_IdAndIdProducto_Id(Long idBodega, Long idProducto);
 
+    Inventario findByIdBodega_IdAndIdProducto_Id(Long idBodega, Long idProducto);
 }
