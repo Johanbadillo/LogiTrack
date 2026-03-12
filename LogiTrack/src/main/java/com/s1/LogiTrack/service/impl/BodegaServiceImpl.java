@@ -52,18 +52,18 @@ public class BodegaServiceImpl implements BodegaService {
     @Override
     public BodegaResponseDTO buscarPorId(Long id) {
         Bodega b=bodegaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No existe dicha bodega"));
+                .orElseThrow(() -> new BusinessRuleException("No existe dicha bodega"));
         Empleado e=empleadoRepository.findById(b.getIdEncargado().getId())
-                .orElseThrow(() -> new RuntimeException("No existe dicho empleado"));
+                .orElseThrow(() -> new BusinessRuleException("No existe dicho empleado"));
         return bodegaMapper.entidadADTO(b,empleadoMapper.entidadADTO(e));
     }
 
     @Override
     public BodegaResponseDTO actualizar(Long id, BodegaRequestDTO dto) {
         Bodega b=bodegaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Error, no existe dicha bodega a actualizar"));
+                .orElseThrow(() -> new BusinessRuleException("Error, no existe dicha bodega a actualizar"));
         Empleado e=empleadoRepository.findById(dto.idEncargado())
-                .orElseThrow(() -> new RuntimeException("Error, no existe dicho empleado"));
+                .orElseThrow(() -> new BusinessRuleException("Error, no existe dicho empleado"));
         bodegaMapper.actualizarEntidadDesdeDTO(b,dto,e);
         Bodega bodega_actualizada=bodegaRepository.save(b);
 
@@ -74,7 +74,7 @@ public class BodegaServiceImpl implements BodegaService {
     @Override
     public void eliminar(Long id) {
         Bodega b=bodegaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No existe dicha bodega a eliminar"));
+                .orElseThrow(() -> new BusinessRuleException("No existe dicha bodega a eliminar"));
         bodegaRepository.delete(b);
     }
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class BodegaMapper {
 
     public BodegaResponseDTO entidadADTO(Bodega bodega, EmpleadoResponseDTO dtoE) {
-        if (bodega == null || dtoE == null) return null;
+        if (bodega == null) return null;
 
         return new BodegaResponseDTO(
                 bodega.getId(),
