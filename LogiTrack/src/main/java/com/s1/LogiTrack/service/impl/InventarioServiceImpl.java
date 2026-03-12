@@ -67,12 +67,8 @@ public class InventarioServiceImpl implements InventarioService {
         return inventarioRepository.findAll().stream()
                 .map(dato -> {
 
-                    Bodega b = bodegaRepository.findById(dato.getIdBodega().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHA BODEGA"));
-
-                    Producto p = productoRepository.findById(dato.getIdProducto().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO PRODUCTO"));
-
+                    Bodega b = dato.getIdBodega();
+                    Producto p = dato.getIdProducto();
                     return inventarioMapper.entidadADTO(dato, bodegaMapper.entidadADTO(b, empleadoMapper.entidadADTO(b.getIdEncargado())), productoMapper.entidadADTO(p));
                 })
                 .toList();
@@ -84,12 +80,8 @@ public class InventarioServiceImpl implements InventarioService {
         Inventario inv = inventarioRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe el inventario"));
 
-        Bodega b = bodegaRepository.findById(inv.getIdBodega().getId())
-                .orElseThrow(() -> new BusinessRuleException("No existe dicha bodega"));
-
-        Producto p = productoRepository.findById(inv.getIdProducto().getId())
-                .orElseThrow(() -> new BusinessRuleException("No existe dicho producto"));
-
+        Bodega b = inv.getIdBodega();
+        Producto p = inv.getIdProducto();
         EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(b.getIdEncargado());
 
         return inventarioMapper.entidadADTO(inv, bodegaMapper.entidadADTO(b, dtoE), productoMapper.entidadADTO(p));

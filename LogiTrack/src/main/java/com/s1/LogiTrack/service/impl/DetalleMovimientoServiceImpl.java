@@ -14,6 +14,7 @@ import com.s1.LogiTrack.repository.MovimientoRepository;
 import com.s1.LogiTrack.repository.ProductoRepository;
 import com.s1.LogiTrack.service.DetalleMovimientoService;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
     private final BodegaMapper bodegaMapper;
 
     @Override
-    public DetalleMovimientoResponseDTO crear(DetalleMovimientoRequestDTO dto) {
+    public DetalleMovimientoResponseDTO crear(@NonNull DetalleMovimientoRequestDTO dto) {
 
         Movimiento m = movimientoRepository.findById(dto.idMovimiento())
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO MOVIMIENTO"));
@@ -60,21 +61,18 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         DetalleMovimiento d = detalleMovimientoRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO DETALLE MOVIMIENTO"));
 
-        Movimiento m = movimientoRepository.findById(d.getIdMovimiento().getId())
-                .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO MOVIMIENTO"));
+        Movimiento m = d.getIdMovimiento();
+        Producto p = d.getIdProducto();
 
-        Producto p = productoRepository.findById(d.getIdProducto().getId())
-                .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO PRODUCTO"));
+        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
+        BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
+        BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
 
-        return detalleMovimientoMapper.entidadADTO(
-                d,
-                movimientoMapper.entidadADTO(m),
-                productoMapper.entidadADTO(p)
-        );
+        return detalleMovimientoMapper.entidadADTO(d, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
     }
 
     @Override
-    public DetalleMovimientoResponseDTO actualizar(Long id, DetalleMovimientoRequestDTO dto) {
+    public DetalleMovimientoResponseDTO actualizar(Long id, @NonNull DetalleMovimientoRequestDTO dto) {
 
         DetalleMovimiento d = detalleMovimientoRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE DETALLE MOVIMIENTO"));
@@ -86,13 +84,13 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE PRODUCTO"));
 
         detalleMovimientoMapper.actualizarEntidadDesdeDTO(d, dto, m, p);
-
         DetalleMovimiento actualizado = detalleMovimientoRepository.save(d);
 
-        return detalleMovimientoMapper.entidadADTO(
-                actualizado,
-                movimientoMapper.entidadADTO(m),
-                productoMapper.entidadADTO(p)
+        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
+        BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
+        BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
+
+        return detalleMovimientoMapper.entidadADTO(actualizado, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p)
         );
     }
 
@@ -111,17 +109,14 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         return detalleMovimientoRepository.findByIdMovimientoId(idMovimiento).stream()
                 .map(dato -> {
 
-                    Movimiento m = movimientoRepository.findById(dato.getIdMovimiento().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE MOVIMIENTO"));
+                    Movimiento m = dato.getIdMovimiento();
+                    Producto p = dato.getIdProducto();
 
-                    Producto p = productoRepository.findById(dato.getIdProducto().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE PRODUCTO"));
+                    EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
+                    BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
+                    BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
 
-                    return detalleMovimientoMapper.entidadADTO(
-                            dato,
-                            movimientoMapper.entidadADTO(m),
-                            productoMapper.entidadADTO(p)
-                    );
+                    return detalleMovimientoMapper.entidadADTO(dato, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
                 })
                 .toList();
     }

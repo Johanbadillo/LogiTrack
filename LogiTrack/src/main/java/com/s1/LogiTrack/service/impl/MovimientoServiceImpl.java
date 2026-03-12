@@ -63,14 +63,9 @@ public class MovimientoServiceImpl implements MovimientoService {
         return movimientoRepository.findAll().stream()
                 .map(dato -> {
 
-                    Empleado e = empleadoRepository.findById(dato.getIdEmpleado().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO EMPLEADO"));
-
-                    Bodega bo = bodegaRepository.findById(dato.getIdBodegaOrigen().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE BODEGA ORIGEN"));
-
-                    Bodega bd = bodegaRepository.findById(dato.getIdBodegaDestino().getId())
-                            .orElseThrow(() -> new BusinessRuleException("NO EXISTE BODEGA DESTINO"));
+                    Empleado e = dato.getIdEmpleado();
+                    Bodega bo = dato.getIdBodegaOrigen();
+                    Bodega bd = dato.getIdBodegaDestino();
 
                     return movimientoMapper.entidadADTO(dato, empleadoMapper.entidadADTO(e), bodegaMapper.entidadADTO(bo, empleadoMapper.entidadADTO(e)), bodegaMapper.entidadADTO(bd, empleadoMapper.entidadADTO(e)));
                 })
@@ -83,14 +78,9 @@ public class MovimientoServiceImpl implements MovimientoService {
         Movimiento m = movimientoRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO MOVIMIENTO"));
 
-        Empleado e = empleadoRepository.findById(m.getIdEmpleado().getId())
-                .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO EMPLEADO"));
-
-        Bodega bo = bodegaRepository.findById(m.getIdBodegaOrigen().getId())
-                .orElseThrow(() -> new BusinessRuleException("NO EXISTE BODEGA ORIGEN"));
-
-        Bodega bd = bodegaRepository.findById(m.getIdBodegaDestino().getId())
-                .orElseThrow(() -> new BusinessRuleException("NO EXISTE BODEGA DESTINO"));
+        Empleado e = m.getIdEmpleado();
+        Bodega bo = m.getIdBodegaOrigen();
+        Bodega bd = m.getIdBodegaDestino();
 
         EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(e);
         BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(bo, dtoE);
@@ -100,7 +90,7 @@ public class MovimientoServiceImpl implements MovimientoService {
     }
 
     @Override
-    public MovimientoResponseDTO actualizar(Long id, MovimientoRequestDTO dto) {
+    public MovimientoResponseDTO actualizar(Long id, @NonNull MovimientoRequestDTO dto) {
 
         Movimiento m = movimientoRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE MOVIMIENTO A ACTUALIZAR"));

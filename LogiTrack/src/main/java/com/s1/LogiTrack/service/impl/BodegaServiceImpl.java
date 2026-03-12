@@ -12,6 +12,7 @@ import com.s1.LogiTrack.repository.BodegaRepository;
 import com.s1.LogiTrack.repository.EmpleadoRepository;
 import com.s1.LogiTrack.service.BodegaService;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 
@@ -29,7 +30,7 @@ public class BodegaServiceImpl implements BodegaService {
     private final EmpleadoMapper empleadoMapper;
 
     @Override
-    public BodegaResponseDTO crear(BodegaRequestDTO dto) {
+    public BodegaResponseDTO crear(@NonNull BodegaRequestDTO dto) {
         Empleado e = empleadoRepository.findById(dto.idEncargado())
                 .orElseThrow(() -> new BusinessRuleException("Error, no existe dicho encargado"));
         Bodega b=bodegaMapper.DTOAentidad(dto,e);
@@ -53,13 +54,13 @@ public class BodegaServiceImpl implements BodegaService {
     public BodegaResponseDTO buscarPorId(Long id) {
         Bodega b=bodegaRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe dicha bodega"));
-        Empleado e=empleadoRepository.findById(b.getIdEncargado().getId())
-                .orElseThrow(() -> new BusinessRuleException("No existe dicho empleado"));
+
+        Empleado e=b.getIdEncargado();
         return bodegaMapper.entidadADTO(b,empleadoMapper.entidadADTO(e));
     }
 
     @Override
-    public BodegaResponseDTO actualizar(Long id, BodegaRequestDTO dto) {
+    public BodegaResponseDTO actualizar(Long id, @NonNull BodegaRequestDTO dto) {
         Bodega b=bodegaRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("Error, no existe dicha bodega a actualizar"));
         Empleado e=empleadoRepository.findById(dto.idEncargado())
