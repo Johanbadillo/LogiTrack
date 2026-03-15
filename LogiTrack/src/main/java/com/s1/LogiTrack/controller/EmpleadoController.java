@@ -1,13 +1,13 @@
 package com.s1.LogiTrack.controller;
 
 import com.s1.LogiTrack.dto.request.EmpleadoRequestDTO;
-import com.s1.LogiTrack.dto.request.PersonaRequestDTO;
 import com.s1.LogiTrack.dto.response.EmpleadoResponseDTO;
 import com.s1.LogiTrack.service.EmpleadoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +39,10 @@ public class EmpleadoController {
             )
     })
     public ResponseEntity<EmpleadoResponseDTO> guardar(
-            @RequestBody EmpleadoRequestDTO empleadoDTO,
-            @RequestParam PersonaRequestDTO personaDTO){
+            @Valid @RequestBody EmpleadoRequestDTO empleadoDTO) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(empleadoService.crear(empleadoDTO, personaDTO));
+                .body(empleadoService.crear(empleadoDTO));
     }
 
     @Operation(
@@ -69,11 +68,10 @@ public class EmpleadoController {
     })
     public ResponseEntity<EmpleadoResponseDTO> actualizar(
             @PathVariable Long id,
-            @RequestBody EmpleadoRequestDTO empleadoDTO,
-            @RequestParam PersonaRequestDTO personaDTO){
+            @Valid @RequestBody EmpleadoRequestDTO empleadoDTO) {
 
         return ResponseEntity.ok(
-                empleadoService.actualizar(id, empleadoDTO, personaDTO)
+                empleadoService.actualizar(id, empleadoDTO)
         );
     }
 
@@ -88,7 +86,7 @@ public class EmpleadoController {
                     description = "Lista de empleados obtenida correctamente"
             )
     })
-    public ResponseEntity<List<EmpleadoResponseDTO>> listar(){
+    public ResponseEntity<List<EmpleadoResponseDTO>> listar() {
         return ResponseEntity.ok(empleadoService.listar());
     }
 
@@ -108,7 +106,7 @@ public class EmpleadoController {
                     content = @Content
             )
     })
-    public ResponseEntity<EmpleadoResponseDTO> buscarPorId(@PathVariable Long id){
+    public ResponseEntity<EmpleadoResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(empleadoService.buscarPorId(id));
     }
 
@@ -128,7 +126,7 @@ public class EmpleadoController {
                     content = @Content
             )
     })
-    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         empleadoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }

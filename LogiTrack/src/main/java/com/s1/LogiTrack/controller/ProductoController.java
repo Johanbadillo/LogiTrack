@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class ProductoController {
                     content = @Content
             )
     })
-    public ResponseEntity<ProductoResponseDTO> guardar(@RequestBody ProductoRequestDTO dto){
+    public ResponseEntity<ProductoResponseDTO> guardar(@Valid @RequestBody ProductoRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productoService.crear(dto));
     }
@@ -64,8 +65,8 @@ public class ProductoController {
             )
     })
     public ResponseEntity<ProductoResponseDTO> actualizar(
-            @RequestBody ProductoRequestDTO dto,
-            @PathVariable Long id){
+            @Valid @RequestBody ProductoRequestDTO dto,
+            @PathVariable Long id) {
 
         return ResponseEntity.ok()
                 .body(productoService.actualizar(id, dto));
@@ -82,7 +83,7 @@ public class ProductoController {
                     description = "Lista de productos obtenida correctamente"
             )
     })
-    public ResponseEntity<List<ProductoResponseDTO>> listarTodos(){
+    public ResponseEntity<List<ProductoResponseDTO>> listarTodos() {
         return ResponseEntity.ok()
                 .body(productoService.listar());
     }
@@ -103,7 +104,7 @@ public class ProductoController {
                     content = @Content
             )
     })
-    public ResponseEntity<ProductoResponseDTO> buscarId(@PathVariable Long id){
+    public ResponseEntity<ProductoResponseDTO> buscarId(@PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(productoService.buscarPorId(id));
     }
@@ -124,7 +125,7 @@ public class ProductoController {
                     content = @Content
             )
     })
-    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

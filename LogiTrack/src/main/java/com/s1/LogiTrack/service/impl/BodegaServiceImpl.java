@@ -33,17 +33,17 @@ public class BodegaServiceImpl implements BodegaService {
     public BodegaResponseDTO crear(@NonNull BodegaRequestDTO dto) {
         Empleado e = empleadoRepository.findById(dto.idEncargado())
                 .orElseThrow(() -> new BusinessRuleException("Error, no existe dicho encargado"));
-        Bodega b=bodegaMapper.DTOAentidad(dto,e);
-        Bodega bodega_insertada=bodegaRepository.save(b);
+        Bodega b = bodegaMapper.DTOAentidad(dto, e);
+        Bodega bodega_insertada = bodegaRepository.save(b);
 
-        EmpleadoResponseDTO dtoE=empleadoMapper.entidadADTO(e);
-        return bodegaMapper.entidadADTO(bodega_insertada,dtoE);
+        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(e);
+        return bodegaMapper.entidadADTO(bodega_insertada, dtoE);
     }
 
     @Override
     public List<BodegaResponseDTO> listar() {
         return bodegaRepository.findAll().stream()
-                .map(dato->{
+                .map(dato -> {
                     Empleado e = dato.getIdEncargado();
                     return bodegaMapper.entidadADTO(dato, empleadoMapper.entidadADTO(e));
                 })
@@ -52,29 +52,29 @@ public class BodegaServiceImpl implements BodegaService {
 
     @Override
     public BodegaResponseDTO buscarPorId(Long id) {
-        Bodega b=bodegaRepository.findById(id)
+        Bodega b = bodegaRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe dicha bodega"));
 
-        Empleado e=b.getIdEncargado();
-        return bodegaMapper.entidadADTO(b,empleadoMapper.entidadADTO(e));
+        Empleado e = b.getIdEncargado();
+        return bodegaMapper.entidadADTO(b, empleadoMapper.entidadADTO(e));
     }
 
     @Override
     public BodegaResponseDTO actualizar(Long id, @NonNull BodegaRequestDTO dto) {
-        Bodega b=bodegaRepository.findById(id)
+        Bodega b = bodegaRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("Error, no existe dicha bodega a actualizar"));
-        Empleado e=empleadoRepository.findById(dto.idEncargado())
+        Empleado e = empleadoRepository.findById(dto.idEncargado())
                 .orElseThrow(() -> new BusinessRuleException("Error, no existe dicho empleado"));
-        bodegaMapper.actualizarEntidadDesdeDTO(b,dto,e);
-        Bodega bodega_actualizada=bodegaRepository.save(b);
+        bodegaMapper.actualizarEntidadDesdeDTO(b, dto, e);
+        Bodega bodega_actualizada = bodegaRepository.save(b);
 
-        EmpleadoResponseDTO dtoE=empleadoMapper.entidadADTO(e);
-        return bodegaMapper.entidadADTO(bodega_actualizada,dtoE);
+        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(e);
+        return bodegaMapper.entidadADTO(bodega_actualizada, dtoE);
     }
 
     @Override
     public void eliminar(Long id) {
-        Bodega b=bodegaRepository.findById(id)
+        Bodega b = bodegaRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe dicha bodega a eliminar"));
         bodegaRepository.delete(b);
     }

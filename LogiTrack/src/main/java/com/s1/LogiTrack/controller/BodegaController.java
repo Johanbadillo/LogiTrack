@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class BodegaController {
                     content = @Content
             )
     })
-    public ResponseEntity<BodegaResponseDTO> guardar(@RequestBody BodegaRequestDTO dto){
+    public ResponseEntity<BodegaResponseDTO> guardar(@Valid @RequestBody BodegaRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bodegaService.crear(dto));
     }
 
@@ -62,7 +63,7 @@ public class BodegaController {
                     content = @Content
             )
     })
-    public ResponseEntity<BodegaResponseDTO> actualizar(@RequestBody BodegaRequestDTO dto, @PathVariable Long id){
+    public ResponseEntity<BodegaResponseDTO> actualizar(@Valid @RequestBody BodegaRequestDTO dto, @PathVariable Long id) {
         return ResponseEntity.ok().body(bodegaService.actualizar(id, dto));
     }
 
@@ -77,7 +78,7 @@ public class BodegaController {
                     description = "Lista de bodegas obtenida correctamente"
             )
     })
-    public ResponseEntity<List<BodegaResponseDTO>> listarTodos(){
+    public ResponseEntity<List<BodegaResponseDTO>> listarTodos() {
         return ResponseEntity.ok().body(bodegaService.listar());
     }
 
@@ -98,7 +99,7 @@ public class BodegaController {
 
             )
     })
-    public ResponseEntity<BodegaResponseDTO> buscarId(@PathVariable Long id){
+    public ResponseEntity<BodegaResponseDTO> buscarId(@PathVariable Long id) {
         return ResponseEntity.ok().body(bodegaService.buscarPorId(id));
     }
 
@@ -118,7 +119,7 @@ public class BodegaController {
                     content = @Content
             )
     })
-    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         bodegaService.eliminar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

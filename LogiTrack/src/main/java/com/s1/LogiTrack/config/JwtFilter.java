@@ -18,10 +18,7 @@ public class JwtFilter extends GenericFilter {
 
 
     @Override
-    public void doFilter(ServletRequest request,
-                         ServletResponse response,
-                         FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
 
         HttpServletRequest http = (HttpServletRequest) request;
@@ -40,13 +37,9 @@ public class JwtFilter extends GenericFilter {
 
             if (username != null) {
 
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null,
 
-                                Collections.emptyList()
-                        );
+                        Collections.emptyList());
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }

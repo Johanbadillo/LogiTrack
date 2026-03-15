@@ -27,11 +27,11 @@ public class SecurityConfig {
 
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf-> csrf.disable())
-                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                .authorizeHttpRequests( auth -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login").permitAll()
                         // Aqui esto es para poder visualizar en el swagger sin importar si uno tiene el secutiry
                         .requestMatchers(

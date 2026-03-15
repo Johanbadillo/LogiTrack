@@ -11,13 +11,16 @@ public record DetalleMovimientoRequestDTO(
         @Positive(message = "El id del movimiento debe ser mayor que 0")
         @Schema(description = "ID del movimiento al que pertenece el detalle", example = "5")
         Long idMovimiento,
+
         @NotNull(message = "El id del producto es obligatorio")
         @Positive(message = "El id del producto debe ser mayor que 0")
         @Schema(description = "ID del producto que se mueve entre bodegas", example = "12")
         Long idProducto,
+
         @NotNull(message = "La cantidad es obligatoria")
         @Min(value = 10, message = "La cantidad debe ser mínimo 10")
         @Schema(description = "Cantidad de productos que se trasladan en el movimiento con un minimo de 10Unidades", example = "20")
         Integer cantidad
+
 ) {
 }

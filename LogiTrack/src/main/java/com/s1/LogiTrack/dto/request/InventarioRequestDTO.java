@@ -20,5 +20,6 @@ public record InventarioRequestDTO(
         @Positive(message = "La cantidad debe ser mayor que 0")
         @Schema(description = "Cantidad disponible del producto en la bodega", example = "150")
         Integer cantidad
+
 ) {
 }

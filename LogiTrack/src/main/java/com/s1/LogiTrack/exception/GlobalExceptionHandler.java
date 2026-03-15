@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     // Cuando no existe una respuesta 404
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerNotFound(EntityNotFoundException ex){
+    public ResponseEntity<ErrorResponse> handlerNotFound(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(
                         LocalDateTime.now(),

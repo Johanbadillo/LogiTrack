@@ -33,7 +33,7 @@ public class AuthControlle {
             throw new BusinessRuleException("Credenciales inválidas");
         }
 
-        String token = jwtService.generateToken(empleado.getUsuario());
+        String token = jwtService.generateToken(empleado.getUsuario(), empleado.getRol().name());
 
         return Map.of("token", token);
     }

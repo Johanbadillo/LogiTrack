@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+// eso es para que esas dos sean unicas juntas
 @Table(
         name = "inventario",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"id_bodega","id_producto"})
+                @UniqueConstraint(columnNames = {"id_bodega", "id_producto"})
         }
 )
 @Getter
@@ -23,11 +24,11 @@ public class Inventario {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_bodega",nullable = false)
+    @JoinColumn(name = "id_bodega", nullable = false)
     private Bodega idBodega;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_producto",nullable = false)
+    @JoinColumn(name = "id_producto", nullable = false)
     private Producto idProducto;
 
     @Column(nullable = false)

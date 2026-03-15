@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class InventarioController {
                     content = @Content
             )
     })
-    public ResponseEntity<InventarioResponseDTO> guardar(@RequestBody InventarioRequestDTO dto){
+    public ResponseEntity<InventarioResponseDTO> guardar(@Valid @RequestBody InventarioRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(inventarioService.crear(dto));
     }
@@ -64,8 +65,8 @@ public class InventarioController {
             )
     })
     public ResponseEntity<InventarioResponseDTO> actualizar(
-            @RequestBody InventarioRequestDTO dto,
-            @PathVariable Long id){
+            @Valid @RequestBody InventarioRequestDTO dto,
+            @PathVariable Long id) {
 
         return ResponseEntity.ok()
                 .body(inventarioService.actualizar(id, dto));
@@ -82,7 +83,7 @@ public class InventarioController {
                     description = "Lista de inventario obtenida correctamente"
             )
     })
-    public ResponseEntity<List<InventarioResponseDTO>> listarTodos(){
+    public ResponseEntity<List<InventarioResponseDTO>> listarTodos() {
         return ResponseEntity.ok()
                 .body(inventarioService.listar());
     }
@@ -103,7 +104,7 @@ public class InventarioController {
                     content = @Content
             )
     })
-    public ResponseEntity<InventarioResponseDTO> buscarId(@PathVariable Long id){
+    public ResponseEntity<InventarioResponseDTO> buscarId(@PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(inventarioService.buscarPorId(id));
     }
@@ -124,7 +125,7 @@ public class InventarioController {
                     content = @Content
             )
     })
-    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         inventarioService.eliminar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

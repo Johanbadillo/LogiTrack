@@ -12,30 +12,31 @@ import java.util.Date;
 public class JwtService {
     private final String SECRET = "clave_super_secreta_para_clase_2026";
 
-    private  final long EXPIRATION = 1000 * 60 * 30;
+    private final long EXPIRATION = 1000 * 60 * 30;
 
-    private Key getKey(){
+    private Key getKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
-    public String generateToken (String username){
+    public String generateToken(String username, String rol) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("rol", rol)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String validateToken(String token){
-        try{
+    public String validateToken(String token) {
+        try {
             return Jwts.parserBuilder()
                     .setSigningKey(getKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

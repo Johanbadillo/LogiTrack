@@ -39,9 +39,9 @@ public class InventarioServiceImpl implements InventarioService {
     private final EmpleadoMapper empleadoMapper;
 
     @Override
-    public InventarioResponseDTO crear(@NonNull InventarioRequestDTO dto){
+    public InventarioResponseDTO crear(@NonNull InventarioRequestDTO dto) {
 
-        if(inventarioRepository.existsByIdBodega_IdAndIdProducto_Id(dto.idBodega(), dto.idProducto())){
+        if (inventarioRepository.existsByIdBodega_IdAndIdProducto_Id(dto.idBodega(), dto.idProducto())) {
             throw new BusinessRuleException("Este producto ya existe en el inventario de esta bodega");
         }
 
@@ -88,7 +88,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     @Override
-    public InventarioResponseDTO actualizar(Long id, @NonNull InventarioRequestDTO dto){
+    public InventarioResponseDTO actualizar(Long id, @NonNull InventarioRequestDTO dto) {
 
         Inventario inv = inventarioRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe el inventario a actualizar"));
@@ -111,7 +111,7 @@ public class InventarioServiceImpl implements InventarioService {
     }
 
     @Override
-    public void eliminar(Long id){
+    public void eliminar(Long id) {
 
         Inventario inv = inventarioRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe el inventario a eliminar"));

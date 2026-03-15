@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class MovimientoController {
                     content = @Content
             )
     })
-    public ResponseEntity<MovimientoResponseDTO> guardar(@RequestBody MovimientoRequestDTO dto){
+    public ResponseEntity<MovimientoResponseDTO> guardar(@Valid @RequestBody MovimientoRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(movimientoService.crear(dto));
     }
@@ -64,8 +65,8 @@ public class MovimientoController {
             )
     })
     public ResponseEntity<MovimientoResponseDTO> actualizar(
-            @RequestBody MovimientoRequestDTO dto,
-            @PathVariable Long id){
+            @Valid @RequestBody MovimientoRequestDTO dto,
+            @PathVariable Long id) {
 
         return ResponseEntity.ok()
                 .body(movimientoService.actualizar(id, dto));
@@ -82,7 +83,7 @@ public class MovimientoController {
                     description = "Lista de movimientos obtenida correctamente"
             )
     })
-    public ResponseEntity<List<MovimientoResponseDTO>> listarTodos(){
+    public ResponseEntity<List<MovimientoResponseDTO>> listarTodos() {
         return ResponseEntity.ok()
                 .body(movimientoService.listar());
     }
@@ -103,7 +104,7 @@ public class MovimientoController {
                     content = @Content
             )
     })
-    public ResponseEntity<MovimientoResponseDTO> buscarId(@PathVariable Long id){
+    public ResponseEntity<MovimientoResponseDTO> buscarId(@PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(movimientoService.buscarPorId(id));
     }
@@ -124,7 +125,7 @@ public class MovimientoController {
                     content = @Content
             )
     })
-    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         movimientoService.eliminar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -9,8 +9,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "persona")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

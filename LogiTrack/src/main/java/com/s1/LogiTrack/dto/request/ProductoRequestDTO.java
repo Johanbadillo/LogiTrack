@@ -14,16 +14,20 @@ public record ProductoRequestDTO(
         @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
         @Schema(description = "Nombre del producto", example = "Caja de almacenamiento")
         String nombre,
+
         @NotBlank(message = "La categoria no puede estar vacía")
         @Size(min = 3, max = 30, message = "La categoria debe tener entre 3 y 30 caracteres")
         @Schema(description = "Nombre del producto", example = "Caja de almacenamiento")
         String categoria,
+
         @NotNull(message = "El tamaño no puede estar vacío")
         @Schema(description = "Tamaño del producto(PEQUENO,MEDIANO,GRANDE)", example = "MEDIANO")
         Tamano tamano,
+
         @NotNull(message = "El precio mensual no puede ser nulo")
-        @Positive( message = "El precio debe ser mayor que 0")
+        @Positive(message = "El precio debe ser mayor que 0")
         @Schema(description = "Precio mensual del producto", example = "120000")
         BigDecimal precioMensual
+
 ) {
 }

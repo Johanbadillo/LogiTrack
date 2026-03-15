@@ -1,7 +1,6 @@
 package com.s1.LogiTrack.mapper;
 
 import com.s1.LogiTrack.dto.request.EmpleadoRequestDTO;
-import com.s1.LogiTrack.dto.request.PersonaRequestDTO;
 import com.s1.LogiTrack.dto.response.EmpleadoResponseDTO;
 import com.s1.LogiTrack.model.Empleado;
 import org.springframework.stereotype.Component;
@@ -22,14 +21,14 @@ public class EmpleadoMapper {
         );
     }
 
-    public Empleado DTOAentidad(EmpleadoRequestDTO dto, PersonaRequestDTO pdto) {
+    public Empleado DTOAentidad(EmpleadoRequestDTO dto) {
         if (dto == null) return null;
 
         Empleado e = new Empleado();
-        e.setNombre(pdto.nombre());
-        e.setDocumento(pdto.documento());
-        e.setCorreo(pdto.correo());
-        e.setTelefono(pdto.telefono());
+        e.setNombre(dto.nombre());
+        e.setDocumento(dto.documento());
+        e.setCorreo(dto.correo());
+        e.setTelefono(dto.telefono());
         e.setRol(dto.rol());
         e.setUsuario(dto.usuario());
         e.setContrasena(dto.contrasena());
@@ -37,13 +36,13 @@ public class EmpleadoMapper {
         return e;
     }
 
-    public void actualizarEntidadDesdeDTO(Empleado empleado, EmpleadoRequestDTO dto, PersonaRequestDTO pdto) {
-        if (empleado == null || dto == null || pdto == null) return;
+    public void actualizarEntidadDesdeDTO(Empleado empleado, EmpleadoRequestDTO dto) {
+        if (empleado == null || dto == null) return;
 
-        empleado.setNombre(pdto.nombre());
-        empleado.setDocumento(pdto.documento());
-        empleado.setCorreo(pdto.correo());
-        empleado.setTelefono(pdto.telefono());
+        empleado.setNombre(dto.nombre());
+        empleado.setDocumento(dto.documento());
+        empleado.setCorreo(dto.correo());
+        empleado.setTelefono(dto.telefono());
 
         empleado.setRol(dto.rol());
         empleado.setUsuario(dto.usuario());

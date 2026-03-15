@@ -45,38 +45,33 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         Producto p = productoRepository.findById(dto.idProducto())
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE DICHO PRODUCTO"));
 
-        DetalleMovimiento d = detalleMovimientoMapper.DTOAentidad(dto, m, p);
-        DetalleMovimiento dInsertado = detalleMovimientoRepository.save(d);
-
         Bodega origen = m.getIdBodegaOrigen();
         Bodega destino = m.getIdBodegaDestino();
 
         Inventario invOrigen = inventarioRepository
                 .findByIdBodega_IdAndIdProducto_Id(origen.getId(), p.getId());
 
-        if(invOrigen == null){
+        if (invOrigen == null) {
             throw new BusinessRuleException("EL PRODUCTO NO EXISTE EN LA BODEGA ORIGEN");
         }
 
-        if(invOrigen.getCantidad() < dto.cantidad()){
+        if (invOrigen.getCantidad() < dto.cantidad()) {
             throw new BusinessRuleException("NO HAY STOCK SUFICIENTE EN BODEGA ORIGEN");
         }
 
-        // RESTAR EN ORIGEN
+        // resto
         invOrigen.setCantidad(origen.getCapacidad() - dto.cantidad());
         inventarioRepository.save(invOrigen);
 
-
-        // INVENTARIO DESTINO
         Inventario invDestino = inventarioRepository
                 .findByIdBodega_IdAndIdProducto_Id(destino.getId(), p.getId());
 
-        if(invDestino != null){
+        if (invDestino != null) {
 
             invDestino.setCantidad(invDestino.getCantidad() + dto.cantidad());
             inventarioRepository.save(invDestino);
 
-        }else{
+        } else {
 
             Inventario nuevo = new Inventario();
             nuevo.setIdBodega(destino);
@@ -86,9 +81,13 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
             inventarioRepository.save(nuevo);
         }
 
+        DetalleMovimiento d = detalleMovimientoMapper.DTOAentidad(dto, m, p);
+        DetalleMovimiento dInsertado = detalleMovimientoRepository.save(d);
+
         EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
         BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(origen, dtoE);
         BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(destino, dtoE);
+
 
         return detalleMovimientoMapper.entidadADTO(dInsertado, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
     }

@@ -28,15 +28,15 @@ public class Movimiento {
     private TipoMovimiento tipoMovimiento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_empleado",nullable = false)
+    @JoinColumn(name = "id_empleado", nullable = false)
     private Empleado idEmpleado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_bodega_origen",nullable = false)
+    @JoinColumn(name = "id_bodega_origen", nullable = false)
     private Bodega idBodegaOrigen;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_bodega_destino",nullable = false)
+    @JoinColumn(name = "id_bodega_destino", nullable = false)
     private Bodega idBodegaDestino;
 
 }

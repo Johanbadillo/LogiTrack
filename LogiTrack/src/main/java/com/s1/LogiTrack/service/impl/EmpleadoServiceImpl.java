@@ -1,7 +1,6 @@
 package com.s1.LogiTrack.service.impl;
 
 import com.s1.LogiTrack.dto.request.EmpleadoRequestDTO;
-import com.s1.LogiTrack.dto.request.PersonaRequestDTO;
 import com.s1.LogiTrack.dto.response.EmpleadoResponseDTO;
 import com.s1.LogiTrack.exception.BusinessRuleException;
 import com.s1.LogiTrack.mapper.EmpleadoMapper;
@@ -21,8 +20,8 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     private final EmpleadoMapper empleadoMapper;
 
     @Override
-    public EmpleadoResponseDTO crear(EmpleadoRequestDTO dto, PersonaRequestDTO pdto) {
-        Empleado e = empleadoMapper.DTOAentidad(dto, pdto);
+    public EmpleadoResponseDTO crear(EmpleadoRequestDTO dto) {
+        Empleado e = empleadoMapper.DTOAentidad(dto);
         Empleado e_insertado = empleadoRepository.save(e);
 
         return empleadoMapper.entidadADTO(e_insertado);
@@ -43,10 +42,10 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     }
 
     @Override
-    public EmpleadoResponseDTO actualizar(Long id, EmpleadoRequestDTO dto, PersonaRequestDTO pdto) {
+    public EmpleadoResponseDTO actualizar(Long id, EmpleadoRequestDTO dto) {
         Empleado e = empleadoRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("No existe dicho empleado a actualizar"));
-        empleadoMapper.actualizarEntidadDesdeDTO(e, dto, pdto);
+        empleadoMapper.actualizarEntidadDesdeDTO(e, dto);
         Empleado e_actualizado = empleadoRepository.save(e);
         return empleadoMapper.entidadADTO(e_actualizado);
     }
