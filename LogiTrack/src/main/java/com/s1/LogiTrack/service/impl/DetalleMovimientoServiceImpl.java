@@ -7,6 +7,7 @@ import com.s1.LogiTrack.dto.response.EmpleadoResponseDTO;
 import com.s1.LogiTrack.exception.BusinessRuleException;
 import com.s1.LogiTrack.mapper.*;
 import com.s1.LogiTrack.model.*;
+import com.s1.LogiTrack.repository.BodegaRepository;
 import com.s1.LogiTrack.repository.DetalleMovimientoRepository;
 import com.s1.LogiTrack.repository.InventarioRepository;
 import com.s1.LogiTrack.repository.MovimientoRepository;
@@ -35,6 +36,7 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
     private final BodegaMapper bodegaMapper;
 
     private final InventarioRepository inventarioRepository;
+    private final BodegaRepository bodegaRepository; // ← necesario para actualizar capacidad
 
     @Override
     public DetalleMovimientoResponseDTO crear(@NonNull DetalleMovimientoRequestDTO dto) {
@@ -48,36 +50,43 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         Bodega origen = m.getIdBodegaOrigen();
         Bodega destino = m.getIdBodegaDestino();
 
+        // ── Validar que el producto existe en el inventario origen ──
         Inventario invOrigen = inventarioRepository
                 .findByIdBodega_IdAndIdProducto_Id(origen.getId(), p.getId());
 
         if (invOrigen == null) {
             throw new BusinessRuleException("EL PRODUCTO NO EXISTE EN LA BODEGA ORIGEN");
         }
-
         if (invOrigen.getCantidad() < dto.cantidad()) {
-            throw new BusinessRuleException("NO HAY STOCK SUFICIENTE EN BODEGA ORIGEN");
+            throw new BusinessRuleException("NO HAY STOCK SUFICIENTE EN BODEGA ORIGEN. " +
+                    "Stock actual: " + invOrigen.getCantidad());
         }
 
-        // resto
-        invOrigen.setCantidad(origen.getCapacidad() - dto.cantidad());
+        if (destino.getCapacidad() < dto.cantidad()) {
+            throw new BusinessRuleException("NO HAY ESPACIO SUFICIENTE EN BODEGA DESTINO. " +
+                    "Espacio disponible: " + destino.getCapacidad());
+        }
+
+        invOrigen.setCantidad(invOrigen.getCantidad() - dto.cantidad());
         inventarioRepository.save(invOrigen);
+
+        origen.setCapacidad(origen.getCapacidad() + dto.cantidad());
+        bodegaRepository.save(origen);
+
+        destino.setCapacidad(destino.getCapacidad() - dto.cantidad());
+        bodegaRepository.save(destino);
 
         Inventario invDestino = inventarioRepository
                 .findByIdBodega_IdAndIdProducto_Id(destino.getId(), p.getId());
 
         if (invDestino != null) {
-
             invDestino.setCantidad(invDestino.getCantidad() + dto.cantidad());
             inventarioRepository.save(invDestino);
-
         } else {
-
             Inventario nuevo = new Inventario();
             nuevo.setIdBodega(destino);
             nuevo.setIdProducto(p);
             nuevo.setCantidad(dto.cantidad());
-
             inventarioRepository.save(nuevo);
         }
 
@@ -88,8 +97,11 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(origen, dtoE);
         BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(destino, dtoE);
 
-
-        return detalleMovimientoMapper.entidadADTO(dInsertado, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
+        return detalleMovimientoMapper.entidadADTO(
+                dInsertado,
+                movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD),
+                productoMapper.entidadADTO(p)
+        );
     }
 
     @Override
@@ -105,7 +117,11 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
         BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
 
-        return detalleMovimientoMapper.entidadADTO(d, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
+        return detalleMovimientoMapper.entidadADTO(
+                d,
+                movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD),
+                productoMapper.entidadADTO(p)
+        );
     }
 
     @Override
@@ -127,7 +143,10 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
         BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
 
-        return detalleMovimientoMapper.entidadADTO(actualizado, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p)
+        return detalleMovimientoMapper.entidadADTO(
+                actualizado,
+                movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD),
+                productoMapper.entidadADTO(p)
         );
     }
 
@@ -153,9 +172,12 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
                     BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
                     BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
 
-                    return detalleMovimientoMapper.entidadADTO(dato, movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD), productoMapper.entidadADTO(p));
+                    return detalleMovimientoMapper.entidadADTO(
+                            dato,
+                            movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD),
+                            productoMapper.entidadADTO(p)
+                    );
                 })
                 .toList();
     }
-
 }
