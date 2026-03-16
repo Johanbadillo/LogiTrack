@@ -36,7 +36,7 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
     private final BodegaMapper bodegaMapper;
 
     private final InventarioRepository inventarioRepository;
-    private final BodegaRepository bodegaRepository; // ← necesario para actualizar capacidad
+    private final BodegaRepository bodegaRepository;
 
     @Override
     public DetalleMovimientoResponseDTO crear(@NonNull DetalleMovimientoRequestDTO dto) {
@@ -130,23 +130,92 @@ public class DetalleMovimientoServiceImpl implements DetalleMovimientoService {
         DetalleMovimiento d = detalleMovimientoRepository.findById(id)
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE DETALLE MOVIMIENTO"));
 
-        Movimiento m = movimientoRepository.findById(dto.idMovimiento())
+        Movimiento mAnterior = d.getIdMovimiento();
+        Producto pAnterior = d.getIdProducto();
+        int cantidadAnterior = d.getCantidad();
+        Bodega origenAnterior = mAnterior.getIdBodegaOrigen();
+        Bodega destinoAnterior = mAnterior.getIdBodegaDestino();
+
+        Inventario invOrigenAnterior = inventarioRepository
+                .findByIdBodega_IdAndIdProducto_Id(origenAnterior.getId(), pAnterior.getId());
+
+        if (invOrigenAnterior != null) {
+            invOrigenAnterior.setCantidad(invOrigenAnterior.getCantidad() + cantidadAnterior);
+            inventarioRepository.save(invOrigenAnterior);
+        }
+
+        Inventario invDestinoAnterior = inventarioRepository
+                .findByIdBodega_IdAndIdProducto_Id(destinoAnterior.getId(), pAnterior.getId());
+
+        if (invDestinoAnterior != null) {
+            invDestinoAnterior.setCantidad(invDestinoAnterior.getCantidad() - cantidadAnterior);
+            inventarioRepository.save(invDestinoAnterior);
+        }
+
+        origenAnterior.setCapacidad(origenAnterior.getCapacidad() - cantidadAnterior);
+        bodegaRepository.save(origenAnterior);
+
+        destinoAnterior.setCapacidad(destinoAnterior.getCapacidad() + cantidadAnterior);
+        bodegaRepository.save(destinoAnterior);
+
+        Movimiento mNuevo = movimientoRepository.findById(dto.idMovimiento())
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE MOVIMIENTO"));
 
-        Producto p = productoRepository.findById(dto.idProducto())
+        Producto pNuevo = productoRepository.findById(dto.idProducto())
                 .orElseThrow(() -> new BusinessRuleException("NO EXISTE PRODUCTO"));
 
-        detalleMovimientoMapper.actualizarEntidadDesdeDTO(d, dto, m, p);
+        Bodega origenNuevo = mNuevo.getIdBodegaOrigen();
+        Bodega destinoNuevo = mNuevo.getIdBodegaDestino();
+
+        Inventario invOrigenNuevo = inventarioRepository
+                .findByIdBodega_IdAndIdProducto_Id(origenNuevo.getId(), pNuevo.getId());
+
+        if (invOrigenNuevo == null) {
+            throw new BusinessRuleException("EL PRODUCTO NO EXISTE EN LA BODEGA ORIGEN");
+        }
+        if (invOrigenNuevo.getCantidad() < dto.cantidad()) {
+            throw new BusinessRuleException("NO HAY STOCK SUFICIENTE EN BODEGA ORIGEN. " +
+                    "Stock actual: " + invOrigenNuevo.getCantidad());
+        }
+        if (destinoNuevo.getCapacidad() < dto.cantidad()) {
+            throw new BusinessRuleException("NO HAY ESPACIO SUFICIENTE EN BODEGA DESTINO. " +
+                    "Espacio disponible: " + destinoNuevo.getCapacidad());
+        }
+
+        invOrigenNuevo.setCantidad(invOrigenNuevo.getCantidad() - dto.cantidad());
+        inventarioRepository.save(invOrigenNuevo);
+
+        origenNuevo.setCapacidad(origenNuevo.getCapacidad() + dto.cantidad());
+        bodegaRepository.save(origenNuevo);
+
+        destinoNuevo.setCapacidad(destinoNuevo.getCapacidad() - dto.cantidad());
+        bodegaRepository.save(destinoNuevo);
+
+        Inventario invDestinoNuevo = inventarioRepository
+                .findByIdBodega_IdAndIdProducto_Id(destinoNuevo.getId(), pNuevo.getId());
+
+        if (invDestinoNuevo != null) {
+            invDestinoNuevo.setCantidad(invDestinoNuevo.getCantidad() + dto.cantidad());
+            inventarioRepository.save(invDestinoNuevo);
+        } else {
+            Inventario nuevo = new Inventario();
+            nuevo.setIdBodega(destinoNuevo);
+            nuevo.setIdProducto(pNuevo);
+            nuevo.setCantidad(dto.cantidad());
+            inventarioRepository.save(nuevo);
+        }
+
+        detalleMovimientoMapper.actualizarEntidadDesdeDTO(d, dto, mNuevo, pNuevo);
         DetalleMovimiento actualizado = detalleMovimientoRepository.save(d);
 
-        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(m.getIdEmpleado());
-        BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(m.getIdBodegaOrigen(), dtoE);
-        BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(m.getIdBodegaDestino(), dtoE);
+        EmpleadoResponseDTO dtoE = empleadoMapper.entidadADTO(mNuevo.getIdEmpleado());
+        BodegaResponseDTO dtoBO = bodegaMapper.entidadADTO(origenNuevo, dtoE);
+        BodegaResponseDTO dtoBD = bodegaMapper.entidadADTO(destinoNuevo, dtoE);
 
         return detalleMovimientoMapper.entidadADTO(
                 actualizado,
-                movimientoMapper.entidadADTO(m, dtoE, dtoBO, dtoBD),
-                productoMapper.entidadADTO(p)
+                movimientoMapper.entidadADTO(mNuevo, dtoE, dtoBO, dtoBD),
+                productoMapper.entidadADTO(pNuevo)
         );
     }
 

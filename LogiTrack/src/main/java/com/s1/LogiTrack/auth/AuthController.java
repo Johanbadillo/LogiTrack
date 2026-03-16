@@ -4,24 +4,24 @@ import com.s1.LogiTrack.config.JwtService;
 import com.s1.LogiTrack.exception.BusinessRuleException;
 import com.s1.LogiTrack.model.Empleado;
 import com.s1.LogiTrack.repository.EmpleadoRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("auth")
-public class AuthControlle {
+public class AuthController {
 
     private final EmpleadoRepository empleadoRepository;
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
 
         Empleado empleado = empleadoRepository.findByUsuario(request.usuario());
 
@@ -35,7 +35,7 @@ public class AuthControlle {
 
         String token = jwtService.generateToken(empleado.getUsuario(), empleado.getRol().name());
 
-        return Map.of("token", token);
+        return ResponseEntity.ok(new LoginResponse(token, empleado.getRol().name()));
     }
 
 }
