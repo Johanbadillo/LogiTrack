@@ -7,19 +7,22 @@
 </p>
 
 <p align="center">
-  <strong>Un sistema de gestión logística desarrollado en Java con Spring Boot para el seguimiento y administración de envíos, clientes y operaciones de transporte.</strong>
+  <strong>
+
+LogiTrack S.A. administraba el inventario de sus bodegas en hojas de cálculo: sin trazabilidad, sin control de accesos y con movimientos entre ciudades registrados manualmente. Cualquier modificación era invisible e irreversible.
+LogiTrack es el sistema backend desarrollado en Java con Spring Boot para resolver eso. Expone una API REST con autenticación JWT, arquitectura limpia por capas y registro completo de cada movimiento de inventario: quién lo hizo, desde qué bodega, hacia dónde y cuándo.</strong>
 </p>
 
 ---
 
 ## 🚀 Características del Sistema
 
-- Registro y gestión de clientes y destinatarios
-- Creación y seguimiento de órdenes de envío
-- Control de estados de entrega en tiempo real
-- Gestión de rutas y operadores logísticos
-- Historial de movimientos y trazabilidad de paquetes
-- Arquitectura limpia por capas (Controller → Service → Repository → Model)
+- Autenticación y control de accesos con JWT
+- Gestión de bodegas y productos por ciudad
+- Registro de entradas, salidas y transferencias entre bodegas
+- Trazabilidad completa: historial inmutable de cada movimiento
+- Validación de stock antes de ejecutar cualquier transferencia
+- Arquitectura por capas: Controller → Service → Repository → Model
 
 ## 📁 Estructura del Proyecto
 ```
