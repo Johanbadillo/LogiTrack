@@ -59,7 +59,9 @@ File > Open > Selecciona la carpeta LogiTrack/
 ```bash
 O directamente desde IntelliJ haciendo clic en ▶️ sobre `LogiTrackApplication.java`
 ```
+### La visualizacion de pruebas en una vista de usuario
 
+[LogiTrack](https://github.com/Johanbadillo/Front_LogiTrack)
 
 ### NOTA
 
