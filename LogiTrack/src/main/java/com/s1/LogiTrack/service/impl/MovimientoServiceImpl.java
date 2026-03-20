@@ -72,6 +72,22 @@ public class MovimientoServiceImpl implements MovimientoService {
                 .toList();
     }
 
+    public List<MovimientoResponseDTO> listarRecien(){
+
+        return movimientoRepository.findTop10ByOrderByIdDesc().stream()
+
+                .map(dato ->{
+                    Empleado e = dato.getIdEmpleado();
+                    Bodega bo = dato.getIdBodegaOrigen();
+                    Bodega bd = dato.getIdBodegaDestino();
+                    return movimientoMapper.entidadADTO(dato, empleadoMapper.entidadADTO(e),
+                            bodegaMapper.entidadADTO(bo, empleadoMapper.entidadADTO(e)),
+                            bodegaMapper.entidadADTO(bd, empleadoMapper.entidadADTO(e)));
+
+                })
+                .toList();
+    }
+
     @Override
     public MovimientoResponseDTO buscarPorId(Long id) {
 

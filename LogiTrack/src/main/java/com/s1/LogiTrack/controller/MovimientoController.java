@@ -129,4 +129,10 @@ public class MovimientoController {
         movimientoService.eliminar(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/recientes")
+    public ResponseEntity<List<MovimientoResponseDTO>> listarRecientes(){
+        return ResponseEntity.ok()
+                .body(movimientoService.listarRecien());
+    }
 }
